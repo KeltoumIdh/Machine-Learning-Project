@@ -15,7 +15,7 @@ def load_and_preprocess_pricing_data(path, show_eda=True):
     df = pd.read_csv(path)
 
     # -------------------------
-    # 1. EDA (optional)
+    # 1. EDA
     # -------------------------
     if show_eda:
         print(df.info())

@@ -148,12 +148,6 @@ form.addEventListener("submit", async (e) => {
     return;
   }
 
-  // Validate debt ratio
-  if (clientData.debt_ratio < 0 || clientData.debt_ratio > 1) {
-    showError("Debt ratio must be between 0 and 1");
-    return;
-  }
-
   // Validate job stability years
   if (clientData.job_stability_years < 0) {
     showError("Job stability years must be greater than or equal to 0");

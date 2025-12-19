@@ -48,17 +48,20 @@ if __name__ == "__main__":
     # Stratify keeps class distribution balanced
     X_train, X_test, y_train, y_test = train_test_split(
         X, y,
-        test_size=0.2,
-        random_state=42,
-        stratify=y
+        test_size=0.2,           # 20% of data used for testing
+        random_state=42,         # Make results reproducible
+        stratify=y               # Preserve target class distribution in splits
     )
 
     # =====================================================
     # Hyperparameter space (controls overfitting)
     # =====================================================
     param_dist = {
+        # Maximum depth of the tree (limits how deep splits can go to control overfitting)
         "max_depth": [3, 5, 7, 10],
+        # Minimum number of samples required to be at a leaf node (higher values increase regularization)
         "min_samples_leaf": [5, 10, 20, 50],
+        # Minimum number of samples required to split an internal node
         "min_samples_split": [2, 5, 10]
     }
 
@@ -81,13 +84,13 @@ if __name__ == "__main__":
     # CV = 5 folds
     # Scoring = accuracy (classification task)
     search_gini = RandomizedSearchCV(
-        estimator=base_gini,
-        param_distributions=param_dist,
-        n_iter=10,
-        cv=5,
-        scoring="accuracy",
-        random_state=42,
-        n_jobs=-1
+        estimator=base_gini,            # Decision tree using Gini impurity
+        param_distributions=param_dist, # Hyperparameter search space
+        n_iter=10,                      # Number of random settings sampled for search
+        cv=5,                           # 5-fold cross-validation
+        scoring="accuracy",             # Use accuracy to score models
+        random_state=42,                # Ensure reproducibility of search
+        n_jobs=-1                       # Use all available CPUs for speed
     )
 
     search_entropy = RandomizedSearchCV(
