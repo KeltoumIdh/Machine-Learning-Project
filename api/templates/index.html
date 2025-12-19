@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Pricing Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-content">
+                <a href="/" class="nav-logo">
+                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="12" fill="url(#gradient)"/>
+                        <path d="M24 14L30 20H26V28H22V20H18L24 14Z" fill="white"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="48" y2="48">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span>ML Predictor</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link active">Pricing</a>
+                    <a href="/credit" class="nav-link">Credit Risk</a>
+                </div>
+            </div>
+        </nav>
+        <div class="header">
+            <div class="logo">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="48" height="48" rx="12" fill="url(#gradient)"/>
+                    <path d="M24 14L30 20H26V28H22V20H18L24 14Z" fill="white"/>
+                    <path d="M24 34L18 28H22V20H26V28H30L24 34Z" fill="white" opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="gradient" x1="0" y1="0" x2="48" y2="48">
+                            <stop offset="0%" stop-color="#667eea"/>
+                            <stop offset="100%" stop-color="#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1>Dynamic Pricing Predictor</h1>
+            <p class="subtitle">AI-Powered Price Prediction using Gradient Descent</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-container">
+                <form id="pricingForm" class="pricing-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="demand_index">
+                                <span class="label-text">Demand Index</span>
+                                <span class="label-hint">Market demand level (≥ 0)</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="demand_index" 
+                                name="demand_index" 
+                                step="0.01" 
+                                min="0" 
+                                required
+                                placeholder="Enter demand index"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="time_slot">
+                                <span class="label-text">Time Slot</span>
+                                <span class="label-hint">Time period identifier</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="time_slot" 
+                                name="time_slot" 
+                                step="0.01" 
+                                required
+                                placeholder="Enter time slot"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="day_of_week">
+                                <span class="label-text">Day of Week</span>
+                                <span class="label-hint">Day identifier (0-6)</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="day_of_week" 
+                                name="day_of_week" 
+                                step="0.01" 
+                                min="0" 
+                                max="6" 
+                                required
+                                placeholder="Enter day (0-6)"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="competition_pressure">
+                                <span class="label-text">Competition Pressure</span>
+                                <span class="label-hint">Competitive market intensity</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="competition_pressure" 
+                                name="competition_pressure" 
+                                step="0.01" 
+                                required
+                                placeholder="Enter competition pressure"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="operational_cost">
+                                <span class="label-text">Operational Cost</span>
+                                <span class="label-hint">Cost of operations</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="operational_cost" 
+                                name="operational_cost" 
+                                step="0.01" 
+                                min="0" 
+                                required
+                                placeholder="Enter operational cost"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="seasonality_index">
+                                <span class="label-text">Seasonality Index</span>
+                                <span class="label-hint">Seasonal demand factor</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="seasonality_index" 
+                                name="seasonality_index" 
+                                step="0.01" 
+                                required
+                                placeholder="Enter seasonality index"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="marketing_intensity">
+                                <span class="label-text">Marketing Intensity</span>
+                                <span class="label-hint">Marketing activity level</span>
+                            </label>
+                            <input 
+                                type="number" 
+                                id="marketing_intensity" 
+                                name="marketing_intensity" 
+                                step="0.01" 
+                                min="0" 
+                                required
+                                placeholder="Enter marketing intensity"
+                            >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Predict Price</span>
+                        <span class="btn-loader" id="btnLoader">
+                            <svg class="spinner" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                                    <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+                                </circle>
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <h2>Predicted Price</h2>
+                        <div class="method-badge" id="methodBadge"></div>
+                    </div>
+                    <div class="price-display" id="priceDisplay">
+                        <span class="currency">$</span>
+                        <span class="price-value" id="priceValue">--</span>
+                    </div>
+                    <div class="result-details" id="resultDetails"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credit Risk Assessment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='credit_style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <div class="nav-content">
+                <a href="/" class="nav-logo">
+                    <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="48" height="48" rx="12" fill="url(#gradient)"/>
+                        <path d="M24 14L30 20H26V28H22V20H18L24 14Z" fill="white"/>
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="48" y2="48">
+                                <stop offset="0%" stop-color="#667eea"/>
+                                <stop offset="100%" stop-color="#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span>ML Predictor</span>
+                </a>
+                <div class="nav-links">
+                    <a href="/" class="nav-link">Pricing</a>
+                    <a href="/credit" class="nav-link active">Credit Risk</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="header">
+            <div class="header-icon">
+                <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect width="64" height="64" rx="16" fill="url(#headerGradient)"/>
+                    <path d="M32 20C26.48 20 22 24.48 22 30C22 35.52 26.48 40 32 40C37.52 40 42 35.52 42 30C42 24.48 37.52 20 32 20ZM32 36C29.79 36 28 34.21 28 32C28 29.79 29.79 28 32 28C34.21 28 36 29.79 36 32C36 34.21 34.21 36 32 36Z" fill="white"/>
+                    <path d="M28 44H36V48H28V44Z" fill="white" opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="headerGradient" x1="0" y1="0" x2="64" y2="64">
+                            <stop offset="0%" stop-color="#f093fb"/>
+                            <stop offset="100%" stop-color="#f5576c"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h1>Credit Risk Assessment</h1>
+            <p class="subtitle">AI-Powered Risk Evaluation using Decision Tree Classifier</p>
+        </div>
+
+        <div class="main-content">
+            <div class="form-container">
+                <form id="creditForm" class="credit-form">
+                    <div class="form-section">
+                        <h2 class="section-title">Client Profile</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="age">
+                                    <span class="label-text">Age</span>
+                                    <span class="label-hint">Client's age in years</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="age" 
+                                    name="age" 
+                                    step="1" 
+                                    min="18" 
+                                    max="100" 
+                                    required
+                                    placeholder="Enter age"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="monthly_income">
+                                    <span class="label-text">Monthly Income</span>
+                                    <span class="label-hint">Monthly income in currency units</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="monthly_income" 
+                                    name="monthly_income" 
+                                    step="0.01" 
+                                    min="0" 
+                                    required
+                                    placeholder="Enter monthly income"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="credit_history_years">
+                                    <span class="label-text">Credit History Years</span>
+                                    <span class="label-hint">Years of credit history</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="credit_history_years" 
+                                    name="credit_history_years" 
+                                    step="0.1" 
+                                    min="0" 
+                                    required
+                                    placeholder="Enter credit history years"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="debt_ratio">
+                                    <span class="label-text">Debt Ratio</span>
+                                    <span class="label-hint">Debt-to-income ratio (0-1)</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="debt_ratio" 
+                                    name="debt_ratio" 
+                                    step="0.01" 
+                                    min="0" 
+                                    max="1" 
+                                    required
+                                    placeholder="Enter debt ratio (0-1)"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="job_stability_years">
+                                    <span class="label-text">Job Stability Years</span>
+                                    <span class="label-hint">Years in current job</span>
+                                </label>
+                                <input 
+                                    type="number" 
+                                    id="job_stability_years" 
+                                    name="job_stability_years" 
+                                    step="0.1" 
+                                    min="0" 
+                                    required
+                                    placeholder="Enter job stability years"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitBtn">
+                        <span class="btn-text">Assess Risk</span>
+                        <span class="btn-loader" id="btnLoader">
+                            <svg class="spinner" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round" stroke-dasharray="32" stroke-dashoffset="32">
+                                    <animate attributeName="stroke-dasharray" dur="2s" values="0 32;16 16;0 32;0 32" repeatCount="indefinite"/>
+                                    <animate attributeName="stroke-dashoffset" dur="2s" values="0;-16;-32;-32" repeatCount="indefinite"/>
+                                </circle>
+                            </svg>
+                        </span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="result-container" id="resultContainer">
+                <div class="result-card" id="resultCard">
+                    <div class="result-header">
+                        <h2>Risk Assessment</h2>
+                        <div class="criterion-badge" id="criterionBadge"></div>
+                    </div>
+                    <div class="risk-display" id="riskDisplay">
+                        <div class="risk-level" id="riskLevel">--</div>
+                        <div class="risk-indicator" id="riskIndicator"></div>
+                    </div>
+                    <div class="result-details" id="resultDetails"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='credit_script.js') }}"></script>
+</body>
+</html>
