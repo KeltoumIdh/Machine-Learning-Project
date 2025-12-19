@@ -19,10 +19,21 @@ def credit():
 def predict():
     data = request.get_json()
 
-    if "features" not in data:
-        return jsonify({"error": "Missing 'features' field"}), 400
+    required = [
+        "demand_index",
+        "operational_cost",
+        "marketing_intensity",
+        "seasonality_index",
+        "competition_pressure",
+        "time_slot",
+        "day_of_week",
+    ]
 
-    result = predict_price(data["features"])
+    missing = [f for f in required if f not in data]
+    if missing:
+        return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
+
+    result = predict_price(data)
     return jsonify(result)
 
 # -----------------------------

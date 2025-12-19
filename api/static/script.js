@@ -45,16 +45,30 @@ function setLoading(loading) {
 // Display prediction result
 function displayResult(data) {
   const price = data.predicted_price;
-  const method = data.method || "Mini-Batch GD";
+  const method = data.gd_mode || "gradient descent";
+  const metrics = data.metrics || {};
 
   priceValue.textContent = formatNumber(price);
   methodBadge.textContent = method;
 
+  const metricText = [];
+  if (metrics.test_mse !== undefined)
+    metricText.push(`Test MSE: ${metrics.test_mse.toFixed(4)}`);
+  if (metrics.test_r2 !== undefined)
+    metricText.push(`Test R²: ${metrics.test_r2.toFixed(4)}`);
+
   resultDetails.innerHTML = `
         <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(102, 126, 234, 0.2);">
-            <p><strong>Model Method:</strong> ${method}</p>
-            <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">
-                This prediction is based on gradient descent optimization trained on historical pricing data.
+            <p><strong>Model Mode:</strong> ${method}</p>
+            ${
+              metricText.length
+                ? `<p style="margin-top: 0.35rem; font-size: 0.9rem; opacity: 0.85;">${metricText.join(
+                    " | "
+                  )}</p>`
+                : ""
+            }
+            <p style="margin-top: 0.75rem; font-size: 0.85rem; opacity: 0.8;">
+                Prediction uses the same scaling (Robust + Standard) and cyclical features as during training.
             </p>
         </div>
     `;
@@ -72,31 +86,35 @@ form.addEventListener("submit", async (e) => {
 
   // Collect form data
   const formData = new FormData(form);
-  const features = [
-    parseFloat(formData.get("demand_index")),
-    parseFloat(formData.get("time_slot")),
-    parseFloat(formData.get("day_of_week")),
-    parseFloat(formData.get("competition_pressure")),
-    parseFloat(formData.get("operational_cost")),
-    parseFloat(formData.get("seasonality_index")),
-    parseFloat(formData.get("marketing_intensity")),
-  ];
+  const payload = {
+    demand_index: parseFloat(formData.get("demand_index")),
+    time_slot: parseFloat(formData.get("time_slot")),
+    day_of_week: parseFloat(formData.get("day_of_week")),
+    competition_pressure: parseFloat(formData.get("competition_pressure")),
+    operational_cost: parseFloat(formData.get("operational_cost")),
+    seasonality_index: parseFloat(formData.get("seasonality_index")),
+    marketing_intensity: parseFloat(formData.get("marketing_intensity")),
+  };
 
-  // Validate features
-  if (features.some((f) => isNaN(f) || f === null || f === undefined)) {
+  // Validate fields
+  const values = Object.values(payload);
+  if (values.some((v) => isNaN(v) || v === null || v === undefined)) {
     showError("Please fill in all fields with valid numbers");
     return;
   }
 
-  // Validate demand_index >= 0
-  if (features[0] < 0) {
+  if (payload.demand_index < 0) {
     showError("Demand Index must be greater than or equal to 0");
     return;
   }
 
-  // Validate day_of_week range
-  if (features[2] < 0 || features[2] > 6) {
+  if (payload.day_of_week < 0 || payload.day_of_week > 6) {
     showError("Day of Week must be between 0 and 6");
+    return;
+  }
+
+  if (payload.time_slot < 0 || payload.time_slot > 27) {
+    showError("Time Slot must be between 0 and 27 (4-week cycle)");
     return;
   }
 
@@ -108,7 +126,7 @@ form.addEventListener("submit", async (e) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ features }),
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
