@@ -38,7 +38,8 @@ GD_MODES = ["batch", "stochastic", "mini-batch"]
 # -------------------------------------------------
 X, y, meta = load_and_preprocess_pricing_data(
     str(DATA_PATH),
-    show_eda=False
+    show_eda=True,
+    save_clean=True
 )
 
 # -------------------------------------------------
